@@ -1,7 +1,7 @@
 package com.aleksuson.recipe.services;
 
+import com.aleksuson.recipe.commands.RecipeCommand;
 import com.aleksuson.recipe.domain.Recipe;
-import com.aleksuson.recipe.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -10,4 +10,9 @@ import java.util.Set;
 public interface RecipeService {
 
     Set<Recipe> getRecipes();
+
+    Recipe getRecipeById(Long id);
+
+    RecipeCommand saveRecipeCommand(RecipeCommand command);
+
 }
