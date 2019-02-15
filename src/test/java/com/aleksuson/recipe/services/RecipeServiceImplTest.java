@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.aleksuson.recipe.domain.Recipe;
+import com.aleksuson.recipe.exceptions.NotFoundException;
 import com.aleksuson.recipe.repositories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class RecipeServiceImplTest {
 
         when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
 
-        Recipe returnedRecipe = recipeService.getRecipeById(1L);
+        Recipe returnedRecipe = recipeService.findById(1L);
         Long id = returnedRecipe.getId();
         Long idExpected =1L;
         assertEquals(idExpected,id);
@@ -66,5 +67,15 @@ class RecipeServiceImplTest {
         recipeRepository.deleteById(idToDelete);
 
         verify(recipeRepository,times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    void getRecipeByIdTestNotFound() {
+
+        Optional<Recipe> recipeOptional = Optional.empty();
+
+        when(recipeRepository.findById(1L)).thenReturn(recipeOptional);
+
+        assertThrows(NotFoundException.class, () -> recipeService.findById(1L));
     }
 }

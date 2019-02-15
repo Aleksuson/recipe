@@ -39,19 +39,6 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
-    public Recipe getRecipeById(Long id) {
-        log.debug("Getting recipe with ID = " + id);
-        Optional<Recipe> recipe = recipeRepository.findById(id);
-
-        if(!recipe.isPresent()){
-            throw new RuntimeException("Recipe Not Found");
-        } else {
-            return recipe.get();
-        }
-    }
-
-    @Override
-    @Transactional
     public RecipeCommand saveRecipeCommand(RecipeCommand command) {
 
         Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
@@ -65,7 +52,7 @@ public class RecipeServiceImpl implements RecipeService {
     public Recipe findById(Long id) {
         Optional<Recipe> recipe = recipeRepository.findById(id);
         if (!recipe.isPresent()) {
-            throw new NotFoundException("Recipe Not Found");
+            throw new NotFoundException("Recipe Not Found. For Id value: " + id.toString());
         } else {
             return recipe.get();
         }
