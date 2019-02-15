@@ -2,6 +2,8 @@ package com.aleksuson.recipe.controllers;
 
 import com.aleksuson.recipe.commands.RecipeCommand;
 import com.aleksuson.recipe.domain.Recipe;
+import com.aleksuson.recipe.exceptions.NotFoundException;
+import com.aleksuson.recipe.repositories.RecipeRepository;
 import com.aleksuson.recipe.services.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +15,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+
+
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -34,7 +41,10 @@ class RecipeControllerTest {
     @Mock
     RecipeService recipeService;
 
-    MockMvc mockMvc;
+    @Mock
+    RecipeRepository recipeRepository;
+
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
@@ -80,7 +90,7 @@ class RecipeControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", "")
                 .param("description", "test"))
-                .andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/recipe/2/show"));
+                .andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/recipe/2/show/"));
 
     }
 
@@ -105,4 +115,15 @@ class RecipeControllerTest {
 
         verify(recipeService,times(1)).deleteById(anyLong());
     }
+
+    @Test
+    void getRecipeByIdTestNotFound() {
+
+        Optional<Recipe> recipeOptional = Optional.empty();
+
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        assertThrows(NotFoundException.class, () -> recipeService.findById(1L));
+    }
+
 }

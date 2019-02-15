@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@ToString(exclude = {"categories","ingredient","notes"})
 @Entity
 @EqualsAndHashCode(exclude = {"categories","ingredient","notes"})
 public class Recipe {
@@ -31,7 +32,7 @@ public class Recipe {
     @Lob
     private Byte[] image;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Notes notes;
 
     @Enumerated(EnumType.STRING)
@@ -56,9 +57,9 @@ public class Recipe {
         }
     }
 
-    public Recipe addIngredient(Ingredient ingredient){
-        ingredient.setRecipe(this);
-        this.ingredient.add(ingredient);
+    public Recipe addIngredient(Ingredient ingredien){
+        ingredien.setRecipe(this);
+        this.ingredient.add(ingredien);
         return this;
     }
 

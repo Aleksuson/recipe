@@ -5,7 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "recipe")
 @Entity
 public class Ingredient{
 
@@ -15,10 +17,10 @@ public class Ingredient{
     private String description;
     private BigDecimal amount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Recipe recipe;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private UnitOfMeasure unitOfMeasure;
 
     public Ingredient() {

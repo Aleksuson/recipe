@@ -4,11 +4,12 @@ import com.aleksuson.recipe.commands.RecipeCommand;
 import com.aleksuson.recipe.converters.RecipeCommandToRecipe;
 import com.aleksuson.recipe.converters.RecipeToRecipeCommand;
 import com.aleksuson.recipe.domain.Recipe;
+import com.aleksuson.recipe.exceptions.NotFoundException;
 import com.aleksuson.recipe.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    @Transactional
     public Set<Recipe> getRecipes() {
         log.debug("I'm in the service");
         Set<Recipe> recipeSet = new HashSet<>();
@@ -36,6 +38,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    @Transactional
     public Recipe getRecipeById(Long id) {
         log.debug("Getting recipe with ID = " + id);
         Optional<Recipe> recipe = recipeRepository.findById(id);
@@ -50,6 +53,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     @Transactional
     public RecipeCommand saveRecipeCommand(RecipeCommand command) {
+
         Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
 
         Recipe savedRecipe = recipeRepository.save(detachedRecipe);
@@ -57,10 +61,11 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeToRecipeCommand.convert(savedRecipe);
     }
     @Override
+    @Transactional
     public Recipe findById(Long id) {
         Optional<Recipe> recipe = recipeRepository.findById(id);
         if (!recipe.isPresent()) {
-            throw new RuntimeException("Recipe Not Found");
+            throw new NotFoundException("Recipe Not Found");
         } else {
             return recipe.get();
         }
@@ -74,6 +79,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         recipeRepository.deleteById(id);
     }

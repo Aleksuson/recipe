@@ -6,10 +6,11 @@ import com.aleksuson.recipe.services.RecipeService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
@@ -23,11 +24,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-
-public class IndexControllerTest {
+@ExtendWith(MockitoExtension.class)
+class IndexControllerTest {
 
     @InjectMocks
     IndexController indexController;
@@ -40,7 +42,6 @@ public class IndexControllerTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -50,7 +51,8 @@ public class IndexControllerTest {
         try {
             mockMvc.perform(get("/"))
                     .andExpect(status().isOk())
-                    .andExpect(view().name("index"));
+                    .andExpect(view().name("index"))
+                    .andExpect(model().attributeExists("recipeList"));
         } catch (Exception e) {
             e.printStackTrace();
         }
